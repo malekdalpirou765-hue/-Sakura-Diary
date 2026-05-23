@@ -99,4 +99,85 @@ textarea{
 input{
   width:100%;
   border:3px solid #000;
-  padding:
+  padding:8px;
+  font-size:8px;
+  margin-bottom:10px;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  background:#ff2e93;
+  border:3px solid #000;
+  color:#fff;
+  font-family:'Press Start 2P';
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">PIXEL DIARY ♡</div>
+
+<div class="container" id="entries"></div>
+
+<button class="fab" onclick="openPopup()">+</button>
+
+<div class="popup" id="popup">
+  <div class="box">
+
+    <textarea id="text" placeholder="write your memory..."></textarea>
+
+    <input type="file" id="image" accept="image/*"/>
+
+    <button onclick="addEntry()">SAVE</button>
+    <button onclick="closePopup()" style="background:#000;margin-top:8px;">CANCEL</button>
+
+  </div>
+</div>
+
+<script>
+function openPopup(){
+  document.getElementById("popup").style.display="flex";
+}
+
+function closePopup(){
+  document.getElementById("popup").style.display="none";
+}
+
+function addEntry(){
+  const text = document.getElementById("text").value;
+  const file = document.getElementById("image").files[0];
+
+  if(!text && !file) return;
+
+  const container = document.getElementById("entries");
+
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const date = new Date().toDateString();
+
+  let img = "";
+  if(file){
+    img = `<img src="${URL.createObjectURL(file)}">`;
+  }
+
+  card.innerHTML = `
+    <div class="date">${date}</div>
+    <div class="text">${text}</div>
+    ${img}
+  `;
+
+  container.prepend(card);
+
+  document.getElementById("text").value = "";
+  document.getElementById("image").value = "";
+
+  closePopup();
+}
+</script>
+
+</body>
+</html>
