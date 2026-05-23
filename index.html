@@ -35,21 +35,18 @@ body{
   padding-bottom:100px;
 }
 
-/* CARD */
 .card{
-  background:#fff;
   border:4px solid #000;
   padding:12px;
   margin-top:15px;
   box-shadow:5px 5px 0 #000;
 }
 
-.date{font-size:8px;color:#ff2e93;margin-bottom:6px;}
+.date{font-size:8px;margin-bottom:6px;}
+.title{font-size:10px;margin-bottom:6px;}
 .mood{font-size:16px;margin-bottom:6px;}
 .text{font-size:9px;white-space:pre-wrap;}
-img{width:100%;border:3px solid #000;margin-top:6px;}
 
-/* FLOAT BUTTON */
 .fab{
   position:fixed;
   bottom:20px;
@@ -64,40 +61,50 @@ img{width:100%;border:3px solid #000;margin-top:6px;}
   box-shadow:4px 4px 0 #000;
 }
 
-/* WRITE SCREEN */
 .write{
   position:fixed;
   inset:0;
-  background:#ffd1e8;
   display:none;
   flex-direction:column;
   padding:15px;
 }
 
-textarea{
+input, textarea{
   width:100%;
-  height:60vh;
   border:4px solid #000;
-  padding:12px;
+  padding:10px;
   font-family:'Press Start 2P';
   font-size:9px;
+  margin-bottom:10px;
+}
+
+textarea{
+  height:45vh;
   resize:none;
 }
 
-input{
-  margin-top:10px;
+.options{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-bottom:10px;
+}
+
+.opt{
   border:3px solid #000;
-  padding:8px;
-  font-size:8px;
+  padding:6px;
+  font-size:7px;
+  cursor:pointer;
+  background:#fff;
 }
 
 .btn{
-  margin-top:10px;
   width:100%;
   padding:12px;
   border:3px solid #000;
   font-family:'Press Start 2P';
   cursor:pointer;
+  margin-top:6px;
 }
 
 .save{background:#ff2e93;color:#fff;}
@@ -108,18 +115,33 @@ input{
 <body>
 
 <div class="header">PIXEL NOTE ✦</div>
-<div class="sub">retro writing system</div>
+<div class="sub">10 themes system</div>
 
 <div class="container" id="entries"></div>
 
 <button class="fab" onclick="openWrite()">+</button>
 
-<!-- WRITE SCREEN -->
 <div class="write" id="write">
 
-  <textarea id="text" placeholder="write everything here..."></textarea>
+  <input id="title" placeholder="title...">
+  <textarea id="text" placeholder="write your note..."></textarea>
 
-  <input type="file" id="image" accept="image/*"/>
+  <!-- 10 THEMES -->
+  <div class="options">
+
+    <div class="opt" onclick="setTheme('#fff','#000')">white</div>
+    <div class="opt" onclick="setTheme('#ffe6f2','#000')">pink</div>
+    <div class="opt" onclick="setTheme('#dff6ff','#000')">blue</div>
+    <div class="opt" onclick="setTheme('#e7ffe7','#000')">green</div>
+    <div class="opt" onclick="setTheme('#1a1a1a','#fff')">dark</div>
+
+    <div class="opt" onclick="setTheme('#fff7d6','#000')">sun</div>
+    <div class="opt" onclick="setTheme('#f0e6ff','#000')">lav</div>
+    <div class="opt" onclick="setTheme('#ffe0cc','#000')">peach</div>
+    <div class="opt" onclick="setTheme('#e0f7ff','#000')">ice</div>
+    <div class="opt" onclick="setTheme('#f2f2f2','#000')">gray</div>
+
+  </div>
 
   <button class="btn save" onclick="save()">SAVE NOTE</button>
   <button class="btn back" onclick="closeWrite()">BACK</button>
@@ -127,64 +149,73 @@ input{
 </div>
 
 <script>
-const container = document.getElementById("entries");
 
-/* EXAMPLES */
-const examples = [
-{mood:"🌸",date:"May 23",text:"soft day... everything felt slow and peaceful"},
-{mood:"✨",date:"May 20",text:"stars in my mind tonight"},
-{mood:"🐱",date:"May 18",text:"a cat followed me home ♡"}
-];
+let bg="#fff";
+let color="#000";
 
-examples.forEach(e=>{
-  const card=document.createElement("div");
-  card.className="card";
-  card.innerHTML=`
-    <div class="date">${e.date}</div>
-    <div class="mood">${e.mood}</div>
-    <div class="text">${e.text}</div>
-  `;
-  container.appendChild(card);
-});
+function setTheme(b,c){
+  bg=b;
+  color=c;
+  document.getElementById("write").style.background=b;
+}
 
 function openWrite(){
   document.getElementById("write").style.display="flex";
+  document.getElementById("write").style.background="#ffd1e8";
 }
 
 function closeWrite(){
   document.getElementById("write").style.display="none";
 }
 
-function save(){
-  const text=document.getElementById("text").value;
-  const file=document.getElementById("image").files[0];
+const container=document.getElementById("entries");
 
-  if(!text && !file) return;
+/* EXAMPLES */
+const examples=[
+{title:"soft morning",mood:"🌸",text:"everything felt peaceful today"},
+{title:"night sky",mood:"✨",text:"stars were whispering quietly"},
+{title:"tiny joy",mood:"🐱",text:"a cat looked at me and I felt happy"}
+];
+
+examples.forEach(e=>{
+  const card=document.createElement("div");
+  card.className="card";
+
+  card.innerHTML=`
+    <div class="title">${e.title}</div>
+    <div class="mood">${e.mood}</div>
+    <div class="text">${e.text}</div>
+  `;
+
+  container.appendChild(card);
+});
+
+function save(){
+  const title=document.getElementById("title").value;
+  const text=document.getElementById("text").value;
+
+  if(!title && !text) return;
 
   const card=document.createElement("div");
   card.className="card";
 
-  const date=new Date().toDateString();
-
-  let img="";
-  if(file){
-    img=`<img src="${URL.createObjectURL(file)}">`;
-  }
+  card.style.background=bg;
+  card.style.color=color;
 
   card.innerHTML=`
-    <div class="date">${date}</div>
+    <div class="title">${title}</div>
     <div class="mood">✨</div>
     <div class="text">${text}</div>
-    ${img}
   `;
 
   container.prepend(card);
 
+  document.getElementById("title").value="";
   document.getElementById("text").value="";
-  document.getElementById("image").value="";
 
   closeWrite();
 }
+
 </script>
 
 </body>
