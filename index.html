@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Pixel Diary</title>
+<title>Pixel Diary ✦</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
@@ -32,7 +32,7 @@ body{
 .card{
   background:#fff;
   border:4px solid #000;
-  padding:10px;
+  padding:12px;
   margin-top:15px;
   box-shadow:5px 5px 0 #000;
 }
@@ -43,10 +43,16 @@ body{
   margin-bottom:6px;
 }
 
+.mood{
+  font-size:16px;
+  margin-bottom:6px;
+}
+
 .text{
   font-size:9px;
   white-space:pre-wrap;
   margin-bottom:8px;
+  color:#000;
 }
 
 img{
@@ -146,13 +152,46 @@ function closePopup(){
   document.getElementById("popup").style.display="none";
 }
 
+/* 🌸 ENTRIES START (EXAMPLES) */
+const examples = [
+{
+  mood:"🌸",
+  text:"today felt soft like pink clouds ✦\ni drank strawberry milk and watched the rain",
+  date:"May 23"
+},
+{
+  mood:"✨",
+  text:"i saw stars in my thoughts tonight\nit felt like everything was glowing inside me",
+  date:"May 20"
+},
+{
+  mood:"🐱",
+  text:"a small cat followed me home\nbest day ever ♡",
+  date:"May 18"
+}
+];
+
+const container = document.getElementById("entries");
+
+examples.forEach(e=>{
+  const card = document.createElement("div");
+  card.className="card";
+
+  card.innerHTML=`
+    <div class="date">${e.date}</div>
+    <div class="mood">${e.mood}</div>
+    <div class="text">${e.text}</div>
+  `;
+
+  container.appendChild(card);
+});
+/* 🌸 ENTRIES END */
+
 function addEntry(){
   const text = document.getElementById("text").value;
   const file = document.getElementById("image").files[0];
 
   if(!text && !file) return;
-
-  const container = document.getElementById("entries");
 
   const card = document.createElement("div");
   card.className = "card";
@@ -166,14 +205,15 @@ function addEntry(){
 
   card.innerHTML = `
     <div class="date">${date}</div>
+    <div class="mood">✨</div>
     <div class="text">${text}</div>
     ${img}
   `;
 
   container.prepend(card);
 
-  document.getElementById("text").value = "";
-  document.getElementById("image").value = "";
+  document.getElementById("text").value="";
+  document.getElementById("image").value="";
 
   closePopup();
 }
