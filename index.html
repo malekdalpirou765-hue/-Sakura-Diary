@@ -210,7 +210,46 @@ textarea{
 <div class="header">PIXEL NOTE ✦</div>
 <div class="sub">✨ write with retro style ✨</div>
 
-<div class="container" id="entries"></div>
+<div class="container" id="entries">
+  
+  <!-- مثال 1: العبارة التي طلبتها بخلفية النعناع والعمل -->
+  <div class="card bg4" style="color: #000000;">
+    <div class="card-header">
+      <div class="title">DAILY TASKS</div>
+      <div class="mood-display">🚀</div>
+    </div>
+    <div class="text">I did my job today. Time to relax!</div>
+  </div>
+
+  <!-- مثال 2: بخلفية الجيم بوي والألعاب -->
+  <div class="card bg8" style="color: #0f380f;">
+    <div class="card-header">
+      <div class="title">GAMING NIGHT</div>
+      <div class="mood-display">🎮</div>
+    </div>
+    <div class="text">Unlocked a new achievement in Retro-World. Level 99 reached!</div>
+  </div>
+
+  <!-- مثال 3: بخلفية الغروب والأفكار -->
+  <div class="card bg6" style="color: #000000;">
+    <div class="card-header">
+      <div class="title">BIG IDEA</div>
+      <div class="mood-display">🔥</div>
+    </div>
+    <div class="text">Build a pixel-art style social media app for retro developers.</div>
+  </div>
+
+  <!-- مثال 4: بخلفية الماتريكس للهاكرز -->
+  <div class="card bg9" style="color: #39ff14;">
+    <div class="card-header">
+      <div class="title">SYSTEM STATUS</div>
+      <div class="mood-display">📝</div>
+    </div>
+    <div class="text">All servers are running perfectly. 
+No bugs found. Encryption complete.</div>
+  </div>
+
+</div>
 
 <button class="fab" onclick="openWrite()">+</button>
 
@@ -286,7 +325,6 @@ function setMood(m){
 
 function openWrite(){
   document.getElementById("write").style.display="flex";
-  // Reset fields with styling
   document.getElementById("write").className="write "+bgClass;
 }
 
@@ -304,11 +342,9 @@ function save(){
   if(!title && !text) return;
 
   const card=document.createElement("div");
-  // للحفاظ على حدود الماتريكس والجيم بوي قمنا بدمج الكلاسات
   card.className="card "+bgClass;
   card.style.color=textColor;
 
-  // إذا تم تغيير كود لون الخط ليكون متوافقاً مع لون حدود الماتريكس
   if(bgClass === 'bg9' && textColor === '#000000') {
      card.style.color = '#39ff14';
   }
@@ -323,7 +359,6 @@ function save(){
 
   container.prepend(card);
 
-  // إفراغ الحقول بعد الحفظ
   document.getElementById("title").value="";
   document.getElementById("text").value="";
   selectedMood="📝"; 
