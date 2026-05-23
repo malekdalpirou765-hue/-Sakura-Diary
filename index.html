@@ -1,464 +1,76 @@
-import { useState, useEffect, useRef } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sakura Diary</title>
 
-const ENTRIES = [ { id: 1, date: "May 20", title: "A soft morning", mood: "🌸", content: "Woke up to the sound of rain tapping on the window. Made matcha and watched the petals fall outside...", }, { id: 2, date: "May 18", title: "Starlight thoughts", mood: "✨", content: "Sometimes I think the sky keeps secrets for me. Tonight felt like one of those nights where everything is quiet and full at the same time...", }, { id: 3, date: "May 14", title: "Little joys", mood: "🐱", content: "Found a tiny cat café hidden down a cobblestone alley. She let me pet her for a whole hour...", }, ];
+  <style>
+    body{
+      margin:0;
+      background:linear-gradient(#ffd6ec,#ffc2df);
+      font-family:cursive;
+      color:white;
+      text-align:center;
+      overflow-x:hidden;
+    }
 
-const MOODS = ["🌸", "✨", "🐱", "🌙", "💭", "🍵", "🎀", "🌷"];
+    .card{
+      background:#fff0f7;
+      color:#c94f8f;
+      width:300px;
+      margin:40px auto;
+      padding:25px;
+      border-radius:25px;
+      border:3px solid white;
+      box-shadow:0 6px 18px rgba(255,105,180,0.3);
+    }
 
-const Sparkles = () => ( <> {[...Array(30)].map((_, i) => ( <div key={i} style={{ position: "absolute", left: ${Math.random() * 100}%, top: ${Math.random() * 100}%, color: i % 2 === 0 ? "#fff" : "#ff69b4", fontSize: ${8 + Math.random() * 14}px, opacity: 0.8, animation: float ${3 + Math.random() * 4}s ease-in-out infinite, pointerEvents: "none", zIndex: 0, }} > ✦ </div> ))} </> );
+    h1{
+      font-size:50px;
+      margin-top:40px;
+      text-shadow:0 0 10px white;
+    }
 
-const Sticker = ({ children, style = {} }) => (
+    button{
+      background:linear-gradient(#ffb6d9,#ff69b4);
+      border:none;
+      color:white;
+      padding:12px 25px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:16px;
+    }
 
-  <div
-    style={{
-      position: "absolute",
-      fontSize: 22,
-      transform: "rotate(-8deg)",
-      filter: "drop-shadow(0 2px 4px rgba(255,105,180,0.3))",
-      ...style,
-    }}
-  >
-    {children}
-  </div>
-);const MusicPlayer = () => (
+    .sparkle{
+      position:absolute;
+      animation:float 3s infinite ease-in-out;
+      color:white;
+    }
 
-  <div
-    style={{
-      background: "linear-gradient(to bottom, #ffe4f1, #ffc0dd)",
-      border: "2px solid white",
-      borderRadius: 16,
-      padding: "12px 14px",
-      marginBottom: 22,
-      boxShadow: "0 6px 16px rgba(255,105,180,0.25)",
-      position: "relative",
-      overflow: "hidden",
-    }}
-  >
-    <div
-      style={{
-        position: "absolute",
-        inset: 0,
-        background:
-          "linear-gradient(to bottom, rgba(255,255,255,0.5), transparent 45%)",
-      }}
-    /><div
-  style={{
-    position: "relative",
-    zIndex: 2,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-  }}
->
-  <div>
-    <div style={{ fontSize: 11, color: "#d85b98", letterSpacing: "0.08em" }}>
-      NOW PLAYING ♡
-    </div>
-    <div
-      style={{
-        color: "#b93f7d",
-        fontSize: 13,
-        marginTop: 4,
-        fontWeight: 700,
-      }}
-    >
-      magical_girl_theme.mp3
-    </div>
-  </div>
+    @keyframes float{
+      50%{transform:translateY(-10px);}
+    }
+  </style>
+</head>
 
-  <div style={{ fontSize: 24 }}>🎵</div>
+<body>
+
+<div class="sparkle" style="top:20px;left:30px;">✦</div>
+<div class="sparkle" style="top:100px;right:50px;">♡</div>
+<div class="sparkle" style="bottom:40px;left:70px;">🎀</div>
+
+<h1>🌸 Sakura Diary 🌸</h1>
+
+<div class="card">
+  <h2>Dear diary...</h2>
+
+  <p>
+    Today felt soft and magical ✨
+  </p>
+
+  <button>New Entry ♡</button>
 </div>
 
-  </div>
-);export default function SakuraDiaryY2K() { const [view, setView] = useState("home"); const [entries, setEntries] = useState(ENTRIES); const [selectedEntry, setSelectedEntry] = useState(null); const [loaded, setLoaded] = useState(false); const textRef = useRef(null);
-
-const [newEntry, setNewEntry] = useState({ title: "", mood: "🌸", content: "", });
-
-useEffect(() => { setTimeout(() => setLoaded(true), 100); }, []);
-
-const saveEntry = () => { if (!newEntry.title && !newEntry.content) return;
-
-const now = new Date();
-const dateStr = now.toLocaleDateString("en-US", {
-  month: "short",
-  day: "numeric",
-});
-
-setEntries([
-  {
-    id: Date.now(),
-    date: dateStr,
-    ...newEntry,
-  },
-  ...entries,
-]);
-
-setNewEntry({
-  title: "",
-  mood: "🌸",
-  content: "",
-});
-
-setView("home");
-
-};
-
-return ( <div style={{ minHeight: "100vh", background: "linear-gradient(180deg, #ffd6ec 0%, #ffc1df 45%, #ffeef7 100%)", fontFamily: "'Comic Neue', cursive", overflow: "hidden", position: "relative", }} > <style>{` @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Pacifico&display=swap');
-
-* {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    @keyframes float {
-      0%,100% { transform: translateY(0px); }
-      50% { transform: translateY(-6px); }
-    }
-
-    @keyframes popIn {
-      from {
-        opacity: 0;
-        transform: scale(0.95) translateY(14px);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
-
-    .fade-in {
-      animation: popIn 0.5s ease forwards;
-    }
-
-    .card {
-      background: linear-gradient(to bottom, #fff0f8, #ffd9ea);
-      border: 3px solid white;
-      border-radius: 24px;
-      padding: 20px;
-      margin-bottom: 18px;
-      position: relative;
-      overflow: hidden;
-      box-shadow:
-        0 0 0 3px #ffb4d7,
-        0 8px 18px rgba(255,105,180,0.25);
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .card:hover {
-      transform: scale(1.02) rotate(-0.5deg);
-    }
-
-    .btn-primary {
-      background: linear-gradient(
-        to bottom,
-        #ffe4f3 0%,
-        #ff9bca 55%,
-        #ff70b4 100%
-      );
-
-      border: 2px solid white;
-      border-radius: 999px;
-      padding: 12px 30px;
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow:
-        inset 0 2px 6px rgba(255,255,255,0.7),
-        0 6px 14px rgba(255,105,180,0.35);
-
-      text-shadow: 0 1px 3px rgba(255,255,255,0.5);
-
-      transition: 0.2s ease;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px) scale(1.03);
-    }
-
-    .btn-ghost {
-      background: #fff0f7;
-      border: 2px solid #ffb2d2;
-      border-radius: 999px;
-      padding: 10px 22px;
-      color: #c94f8f;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    input, textarea {
-      width: 100%;
-      background: #fff7fb;
-      border: 2px solid #ffbddb;
-      border-radius: 16px;
-      padding: 14px;
-      outline: none;
-      font-family: 'Comic Neue', cursive;
-      color: #a84f7c;
-      font-size: 15px;
-      box-shadow: inset 0 2px 5px rgba(255,255,255,0.6);
-    }
-
-    textarea {
-      resize: none;
-    }
-
-    input:focus, textarea:focus {
-      border-color: #ff74b7;
-    }
-
-    .mood-pill {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: linear-gradient(to bottom, #fff0f8, #ffcce4);
-      border: 2px solid white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(255,105,180,0.18);
-      transition: 0.2s ease;
-    }
-
-    .mood-pill.active,
-    .mood-pill:hover {
-      transform: scale(1.12) rotate(-6deg);
-    }
-  `}</style>
-
-  <Sparkles />
-
-  <Sticker style={{ top: 30, left: 20 }}>🎀</Sticker>
-  <Sticker style={{ top: 70, right: 30 }}>♡</Sticker>
-  <Sticker style={{ bottom: 80, left: 20 }}>✦</Sticker>
-  <Sticker style={{ bottom: 30, right: 25 }}>🌸</Sticker>
-
-  <div
-    style={{
-      maxWidth: 480,
-      margin: "0 auto",
-      padding: "28px 20px 50px",
-      position: "relative",
-      zIndex: 2,
-    }}
-  >
-    <div className={loaded ? "fade-in" : ""}>
-      <div
-        style={{
-          fontFamily: "'Pacifico', cursive",
-          fontSize: 38,
-          color: "#ff4fa0",
-          textShadow: "0 3px 10px rgba(255,255,255,0.8)",
-          marginBottom: 6,
-        }}
-      >
-        sakura diary ♡
-      </div>
-
-      <div
-        style={{
-          color: "#d85b98",
-          fontSize: 12,
-          letterSpacing: "0.12em",
-          marginBottom: 22,
-        }}
-      >
-        ONLINE ✦ MOOD: DREAMY
-      </div>
-    </div>
-
-    <MusicPlayer />
-
-    {view === "home" && (
-      <div className="fade-in">
-        <div style={{ textAlign: "center", marginBottom: 26 }}>
-          <button className="btn-primary" onClick={() => setView("write")}>
-            ✨ NEW ENTRY ✨
-          </button>
-        </div>
-
-        {entries.map((e) => (
-          <div
-            key={e.id}
-            className="card"
-            onClick={() => {
-              setSelectedEntry(e);
-              setView("read");
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                top: 10,
-                right: 14,
-                fontSize: 24,
-              }}
-            >
-              {e.mood}
-            </div>
-
-            <div
-              style={{
-                fontFamily: "'Pacifico', cursive",
-                fontSize: 24,
-                color: "#d9478f",
-                marginBottom: 10,
-              }}
-            >
-              {e.title}
-            </div>
-
-            <div
-              style={{
-                color: "#9c5577",
-                lineHeight: 1.7,
-                fontSize: 14,
-                marginBottom: 14,
-              }}
-            >
-              {e.content.slice(0, 95)}...
-            </div>
-
-            <div
-              style={{
-                color: "#d86c9f",
-                fontSize: 11,
-                fontWeight: 700,
-              }}
-            >
-              ♡ {e.date}
-            </div>
-          </div>
-        ))}
-      </div>
-    )}
-
-    {view === "write" && (
-      <div className="card fade-in">
-        <button
-          className="btn-ghost"
-          style={{ marginBottom: 18 }}
-          onClick={() => setView("home")}
-        >
-          ← BACK
-        </button>
-
-        <div
-          style={{
-            fontFamily: "'Pacifico', cursive",
-            fontSize: 28,
-            color: "#ff4d99",
-            marginBottom: 20,
-          }}
-        >
-          dear diary...
-        </div>
-
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 18 }}>
-          {MOODS.map((m) => (
-            <div
-              key={m}
-              className={`mood-pill ${newEntry.mood === m ? "active" : ""}`}
-              onClick={() => setNewEntry({ ...newEntry, mood: m })}
-            >
-              {m}
-            </div>
-          ))}
-        </div>
-
-        <input
-          placeholder="title your memory..."
-          value={newEntry.title}
-          onChange={(e) =>
-            setNewEntry({ ...newEntry, title: e.target.value })
-          }
-          style={{ marginBottom: 14 }}
-        />
-
-        <textarea
-          ref={textRef}
-          rows={8}
-          placeholder="write your magical thoughts here..."
-          value={newEntry.content}
-          onChange={(e) =>
-            setNewEntry({ ...newEntry, content: e.target.value })
-          }
-          style={{ marginBottom: 18 }}
-        />
-
-        <div style={{ textAlign: "right" }}>
-          <button className="btn-primary" onClick={saveEntry}>
-            SAVE ENTRY ♡
-          </button>
-        </div>
-      </div>
-    )}
-
-    {view === "read" && selectedEntry && (
-      <div className="card fade-in">
-        <button
-          className="btn-ghost"
-          style={{ marginBottom: 18 }}
-          onClick={() => setView("home")}
-        >
-          ← BACK
-        </button>
-
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: 8,
-          }}
-        >
-          <div style={{ color: "#d86c9f", fontSize: 12 }}>
-            ✦ {selectedEntry.date}
-          </div>
-
-          <div style={{ fontSize: 28 }}>{selectedEntry.mood}</div>
-        </div>
-
-        <div
-          style={{
-            fontFamily: "'Pacifico', cursive",
-            color: "#ff4d99",
-            fontSize: 30,
-            marginBottom: 18,
-          }}
-        >
-          {selectedEntry.title}
-        </div>
-
-        <div
-          style={{
-            background: "rgba(255,255,255,0.5)",
-            borderRadius: 18,
-            padding: 18,
-            color: "#8d4c6f",
-            lineHeight: 2,
-            fontSize: 15,
-            border: "2px dashed #ffb6d7",
-            whiteSpace: "pre-wrap",
-          }}
-        >
-          {selectedEntry.content}
-        </div>
-
-        <div
-          style={{
-            textAlign: "center",
-            marginTop: 20,
-            color: "#ff6cae",
-            fontSize: 22,
-          }}
-        >
-          ✦ ♡ ✦
-        </div>
-      </div>
-    )}
-  </div>
-</div>
-
-); }
+</body>
+</html>
