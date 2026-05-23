@@ -1,401 +1,464 @@
 import { useState, useEffect, useRef } from "react";
 
-const ENTRIES = [
-  { id: 1, date: "May 20", title: "A soft morning", mood: "🌸", content: "Woke up to the sound of rain tapping on the window. Made matcha and watched the petals fall outside..." },
-  { id: 2, date: "May 18", title: "Starlight thoughts", mood: "✨", content: "Sometimes I think the sky keeps secrets for me. Tonight felt like one of those nights where everything is quiet and full at the same time..." },
-  { id: 3, date: "May 14", title: "Little joys", mood: "🐱", content: "Found a tiny cat café hidden down a cobblestone alley. She let me pet her for a whole hour..." },
-];
+const ENTRIES = [ { id: 1, date: "May 20", title: "A soft morning", mood: "🌸", content: "Woke up to the sound of rain tapping on the window. Made matcha and watched the petals fall outside...", }, { id: 2, date: "May 18", title: "Starlight thoughts", mood: "✨", content: "Sometimes I think the sky keeps secrets for me. Tonight felt like one of those nights where everything is quiet and full at the same time...", }, { id: 3, date: "May 14", title: "Little joys", mood: "🐱", content: "Found a tiny cat café hidden down a cobblestone alley. She let me pet her for a whole hour...", }, ];
 
 const MOODS = ["🌸", "✨", "🐱", "🌙", "💭", "🍵", "🎀", "🌷"];
 
-const HalftoneDots = () => (
-  <svg width="100%" height="100%" style={{ position: "absolute", inset: 0, opacity: 0.18, pointerEvents: "none" }}>
-    <defs>
-      <pattern id="dots" x="0" y="0" width="14" height="14" patternUnits="userSpaceOnUse">
-        <circle cx="7" cy="7" r="2.2" fill="#e8a0b4" />
-      </pattern>
-    </defs>
-    <rect width="100%" height="100%" fill="url(#dots)" />
-  </svg>
-);
+const Sparkles = () => ( <> {[...Array(30)].map((_, i) => ( <div key={i} style={{ position: "absolute", left: ${Math.random() * 100}%, top: ${Math.random() * 100}%, color: i % 2 === 0 ? "#fff" : "#ff69b4", fontSize: ${8 + Math.random() * 14}px, opacity: 0.8, animation: float ${3 + Math.random() * 4}s ease-in-out infinite, pointerEvents: "none", zIndex: 0, }} > ✦ </div> ))} </> );
 
-const SpiralBg = ({ opacity = 0.13, size = 320, top, left, right, bottom }) => (
-  <svg
-    width={size} height={size}
-    viewBox="0 0 200 200"
-    style={{ position: "absolute", top, left, right, bottom, opacity, pointerEvents: "none", zIndex: 0 }}
+const Sticker = ({ children, style = {} }) => (
+
+  <div
+    style={{
+      position: "absolute",
+      fontSize: 22,
+      transform: "rotate(-8deg)",
+      filter: "drop-shadow(0 2px 4px rgba(255,105,180,0.3))",
+      ...style,
+    }}
   >
-    <path
-      d="M100,100 m0,-55 a55,55 0 1,1 -0.1,0 m0,15 a40,40 0 1,0 0.1,0 m0,15 a25,25 0 1,1 -0.1,0 m0,15 a10,10 0 1,0 0.1,0"
-      fill="none" stroke="#e8a0b4" strokeWidth="9" strokeLinecap="round"
-    />
-  </svg>
-);
+    {children}
+  </div>
+);const MusicPlayer = () => (
 
-const CatWings = ({ size = 110, style = {} }) => (
-  <svg width={size} height={size} viewBox="0 0 120 120" style={{ ...style, pointerEvents: "none" }}>
-    {/* wings */}
-    <ellipse cx="22" cy="58" rx="22" ry="13" fill="#f2c4ce" opacity="0.55" transform="rotate(-20,22,58)" />
-    <ellipse cx="98" cy="58" rx="22" ry="13" fill="#f2c4ce" opacity="0.55" transform="rotate(20,98,58)" />
-    {/* cat body */}
-    <path d="M42,90 Q40,65 46,55 Q50,45 60,44 Q70,45 74,55 Q80,65 78,90 Z" fill="#fddde6" />
-    {/* head */}
-    <ellipse cx="60" cy="42" rx="17" ry="16" fill="#fddde6" />
-    {/* ears */}
-    <polygon points="46,30 42,18 53,28" fill="#fddde6" />
-    <polygon points="74,30 78,18 67,28" fill="#fddde6" />
-    {/* inner ears */}
-    <polygon points="47,28 44,20 52,27" fill="#f2a8be" opacity="0.6" />
-    <polygon points="73,28 76,20 68,27" fill="#f2a8be" opacity="0.6" />
-    {/* tail */}
-    <path d="M78,85 Q90,90 88,78" fill="none" stroke="#f2c4ce" strokeWidth="5" strokeLinecap="round" />
-    {/* dot halftone outline */}
-    {[...Array(14)].map((_, i) => {
-      const a = (i / 14) * Math.PI * 2;
-      return <circle key={i} cx={60 + 19 * Math.cos(a)} cy={42 + 18 * Math.sin(a)} r="1.5" fill="#e8a0b4" opacity="0.5" />;
-    })}
-  </svg>
-);
-
-const VinylAccent = ({ size = 80, style = {} }) => (
-  <svg width={size} height={size} viewBox="0 0 80 80" style={{ ...style, pointerEvents: "none" }}>
-    <circle cx="40" cy="40" r="38" fill="#f2c4ce" opacity="0.22" />
-    <circle cx="40" cy="40" r="28" fill="none" stroke="#e8a0b4" strokeWidth="1.5" opacity="0.35" />
-    <circle cx="40" cy="40" r="18" fill="none" stroke="#e8a0b4" strokeWidth="1" opacity="0.25" />
-    <circle cx="40" cy="40" r="5" fill="#e8a0b4" opacity="0.5" />
-    <text x="28" y="37" fontFamily="'Dancing Script', cursive" fontSize="11" fill="#c87090" opacity="0.7" fontStyle="italic">lover</text>
-  </svg>
-);
-
-export default function SakuraDiary() {
-  const [view, setView] = useState("home"); // home | write | read
-  const [entries, setEntries] = useState(ENTRIES);
-  const [selectedEntry, setSelectedEntry] = useState(null);
-  const [newEntry, setNewEntry] = useState({ title: "", mood: "🌸", content: "" });
-  const [loaded, setLoaded] = useState(false);
-  const textRef = useRef(null);
-
-  useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
-
-  const saveEntry = () => {
-    if (!newEntry.title && !newEntry.content) return;
-    const now = new Date();
-    const dateStr = now.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-    setEntries([{ id: Date.now(), date: dateStr, ...newEntry }, ...entries]);
-    setNewEntry({ title: "", mood: "🌸", content: "" });
-    setView("home");
-  };
-
-  return (
-    <div style={{
-      minHeight: "100vh",
-      background: "linear-gradient(145deg, #fff5f7 0%, #fef0f4 40%, #fdf6ee 100%)",
-      fontFamily: "'Lora', Georgia, serif",
+  <div
+    style={{
+      background: "linear-gradient(to bottom, #ffe4f1, #ffc0dd)",
+      border: "2px solid white",
+      borderRadius: 16,
+      padding: "12px 14px",
+      marginBottom: 22,
+      boxShadow: "0 6px 16px rgba(255,105,180,0.25)",
       position: "relative",
       overflow: "hidden",
-    }}>
-      {/* Google Fonts */}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
+    }}
+  >
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        background:
+          "linear-gradient(to bottom, rgba(255,255,255,0.5), transparent 45%)",
+      }}
+    /><div
+  style={{
+    position: "relative",
+    zIndex: 2,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  }}
+>
+  <div>
+    <div style={{ fontSize: 11, color: "#d85b98", letterSpacing: "0.08em" }}>
+      NOW PLAYING ♡
+    </div>
+    <div
+      style={{
+        color: "#b93f7d",
+        fontSize: 13,
+        marginTop: 4,
+        fontWeight: 700,
+      }}
+    >
+      magical_girl_theme.mp3
+    </div>
+  </div>
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+  <div style={{ fontSize: 24 }}>🎵</div>
+</div>
 
-        .fade-in { opacity: 0; transform: translateY(18px); animation: fadeUp 0.7s ease forwards; }
-        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+  </div>
+);export default function SakuraDiaryY2K() { const [view, setView] = useState("home"); const [entries, setEntries] = useState(ENTRIES); const [selectedEntry, setSelectedEntry] = useState(null); const [loaded, setLoaded] = useState(false); const textRef = useRef(null);
 
-        .card {
-          background: rgba(255,255,255,0.72);
-          backdrop-filter: blur(12px);
-          border: 1.5px solid rgba(232,160,180,0.28);
-          border-radius: 22px;
-          transition: transform 0.25s ease, box-shadow 0.25s ease;
-          cursor: pointer;
-          position: relative;
-          overflow: hidden;
-        }
-        .card:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(220,120,160,0.14); }
+const [newEntry, setNewEntry] = useState({ title: "", mood: "🌸", content: "", });
 
-        .btn-primary {
-          background: linear-gradient(135deg, #f2a8be, #e87cac);
-          color: white;
-          border: none;
-          border-radius: 50px;
-          padding: 11px 28px;
-          font-family: 'Lora', serif;
-          font-size: 14px;
-          cursor: pointer;
-          letter-spacing: 0.03em;
-          box-shadow: 0 4px 18px rgba(220,120,160,0.3);
-          transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 7px 24px rgba(220,120,160,0.4); }
+useEffect(() => { setTimeout(() => setLoaded(true), 100); }, []);
 
-        .btn-ghost {
-          background: transparent;
-          color: #c87090;
-          border: 1.5px solid rgba(232,160,180,0.5);
-          border-radius: 50px;
-          padding: 9px 22px;
-          font-family: 'Lora', serif;
-          font-size: 13px;
-          cursor: pointer;
-          transition: background 0.2s;
-        }
-        .btn-ghost:hover { background: rgba(242,164,190,0.12); }
+const saveEntry = () => { if (!newEntry.title && !newEntry.content) return;
 
-        textarea, input {
-          border: 1.5px solid rgba(232,160,180,0.4);
-          border-radius: 14px;
-          background: rgba(255,255,255,0.8);
-          font-family: 'Lora', serif;
-          color: #6b4057;
-          outline: none;
-          transition: border-color 0.2s;
-          width: 100%;
-        }
-        textarea:focus, input:focus { border-color: #e87cac; }
+const now = new Date();
+const dateStr = now.toLocaleDateString("en-US", {
+  month: "short",
+  day: "numeric",
+});
 
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #f2c4ce; border-radius: 10px; }
+setEntries([
+  {
+    id: Date.now(),
+    date: dateStr,
+    ...newEntry,
+  },
+  ...entries,
+]);
 
-        .mood-pill {
-          background: rgba(242,196,206,0.25);
-          border: 1.5px solid rgba(232,160,180,0.35);
-          border-radius: 50%;
-          width: 38px; height: 38px;
-          display: flex; align-items: center; justify-content: center;
-          font-size: 18px; cursor: pointer;
-          transition: background 0.2s, transform 0.15s;
-        }
-        .mood-pill:hover, .mood-pill.active {
-          background: rgba(232,160,180,0.35);
-          transform: scale(1.12);
-        }
-      `}</style>
+setNewEntry({
+  title: "",
+  mood: "🌸",
+  content: "",
+});
 
-      {/* Decorative backgrounds */}
-      <SpiralBg top={-80} left={-80} size={340} opacity={0.11} />
-      <SpiralBg bottom={-60} right={-60} size={260} opacity={0.09} />
-      <VinylAccent size={130} style={{ position: "absolute", top: 20, right: -20, opacity: 0.5 }} />
-      <VinylAccent size={80} style={{ position: "absolute", bottom: 80, left: 10, opacity: 0.35 }} />
+setView("home");
 
-      {/* Header */}
-      <div style={{
-        padding: "32px 28px 0",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        position: "relative", zIndex: 10,
-      }}>
-        <div
-          className={loaded ? "fade-in" : ""}
-          style={{ cursor: "pointer" }}
-          onClick={() => setView("home")}
-        >
-          <div style={{
-            fontFamily: "'Dancing Script', cursive",
-            fontSize: "34px",
-            color: "#c87090",
-            lineHeight: 1,
-            textShadow: "0 2px 12px rgba(200,112,144,0.18)",
-            letterSpacing: "0.01em",
-          }}>
-            sakura diary
-          </div>
-          <div style={{ fontSize: "11px", color: "#d4a0b5", letterSpacing: "0.12em", marginTop: 2, fontStyle: "italic" }}>
-            ~ your petal-soft thoughts ~
-          </div>
-        </div>
+};
 
-        <CatWings size={68} style={{ opacity: 0.85 }} />
+return ( <div style={{ minHeight: "100vh", background: "linear-gradient(180deg, #ffd6ec 0%, #ffc1df 45%, #ffeef7 100%)", fontFamily: "'Comic Neue', cursive", overflow: "hidden", position: "relative", }} > <style>{` @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Pacifico&display=swap');
+
+* {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95) translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .fade-in {
+      animation: popIn 0.5s ease forwards;
+    }
+
+    .card {
+      background: linear-gradient(to bottom, #fff0f8, #ffd9ea);
+      border: 3px solid white;
+      border-radius: 24px;
+      padding: 20px;
+      margin-bottom: 18px;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 3px #ffb4d7,
+        0 8px 18px rgba(255,105,180,0.25);
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.02) rotate(-0.5deg);
+    }
+
+    .btn-primary {
+      background: linear-gradient(
+        to bottom,
+        #ffe4f3 0%,
+        #ff9bca 55%,
+        #ff70b4 100%
+      );
+
+      border: 2px solid white;
+      border-radius: 999px;
+      padding: 12px 30px;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow:
+        inset 0 2px 6px rgba(255,255,255,0.7),
+        0 6px 14px rgba(255,105,180,0.35);
+
+      text-shadow: 0 1px 3px rgba(255,255,255,0.5);
+
+      transition: 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.03);
+    }
+
+    .btn-ghost {
+      background: #fff0f7;
+      border: 2px solid #ffb2d2;
+      border-radius: 999px;
+      padding: 10px 22px;
+      color: #c94f8f;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      background: #fff7fb;
+      border: 2px solid #ffbddb;
+      border-radius: 16px;
+      padding: 14px;
+      outline: none;
+      font-family: 'Comic Neue', cursive;
+      color: #a84f7c;
+      font-size: 15px;
+      box-shadow: inset 0 2px 5px rgba(255,255,255,0.6);
+    }
+
+    textarea {
+      resize: none;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #ff74b7;
+    }
+
+    .mood-pill {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(to bottom, #fff0f8, #ffcce4);
+      border: 2px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(255,105,180,0.18);
+      transition: 0.2s ease;
+    }
+
+    .mood-pill.active,
+    .mood-pill:hover {
+      transform: scale(1.12) rotate(-6deg);
+    }
+  `}</style>
+
+  <Sparkles />
+
+  <Sticker style={{ top: 30, left: 20 }}>🎀</Sticker>
+  <Sticker style={{ top: 70, right: 30 }}>♡</Sticker>
+  <Sticker style={{ bottom: 80, left: 20 }}>✦</Sticker>
+  <Sticker style={{ bottom: 30, right: 25 }}>🌸</Sticker>
+
+  <div
+    style={{
+      maxWidth: 480,
+      margin: "0 auto",
+      padding: "28px 20px 50px",
+      position: "relative",
+      zIndex: 2,
+    }}
+  >
+    <div className={loaded ? "fade-in" : ""}>
+      <div
+        style={{
+          fontFamily: "'Pacifico', cursive",
+          fontSize: 38,
+          color: "#ff4fa0",
+          textShadow: "0 3px 10px rgba(255,255,255,0.8)",
+          marginBottom: 6,
+        }}
+      >
+        sakura diary ♡
       </div>
 
-      {/* Main content */}
-      <div style={{ padding: "24px 24px 40px", maxWidth: 480, margin: "0 auto", position: "relative", zIndex: 5 }}>
-
-        {/* HOME VIEW */}
-        {view === "home" && (
-          <div>
-            {/* Date strip */}
-            <div className="fade-in" style={{
-              animationDelay: "0.1s",
-              display: "flex", alignItems: "center", gap: 10,
-              marginBottom: 24,
-            }}>
-              <div style={{ height: 1, flex: 1, background: "linear-gradient(90deg, transparent, #f2c4ce)" }} />
-              <span style={{ fontSize: "12px", color: "#d4a0b5", fontStyle: "italic", letterSpacing: "0.08em" }}>
-                {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
-              </span>
-              <div style={{ height: 1, flex: 1, background: "linear-gradient(90deg, #f2c4ce, transparent)" }} />
-            </div>
-
-            {/* New entry button */}
-            <div className="fade-in" style={{ animationDelay: "0.18s", marginBottom: 28, textAlign: "center" }}>
-              <button className="btn-primary" onClick={() => setView("write")} style={{ fontSize: 15, padding: "13px 36px" }}>
-                🌸 &nbsp; new entry
-              </button>
-            </div>
-
-            {/* Entry cards */}
-            {entries.map((e, i) => (
-              <div
-                key={e.id}
-                className={`card fade-in`}
-                style={{ animationDelay: `${0.25 + i * 0.1}s`, padding: "20px 22px", marginBottom: 16 }}
-                onClick={() => { setSelectedEntry(e); setView("read"); }}
-              >
-                <HalftoneDots />
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
-                  <div style={{
-                    fontFamily: "'Dancing Script', cursive",
-                    fontSize: "20px",
-                    color: "#c87090",
-                    lineHeight: 1.2,
-                    maxWidth: "75%",
-                  }}>
-                    {e.title || "untitled"}
-                  </div>
-                  <span style={{ fontSize: "22px" }}>{e.mood}</span>
-                </div>
-                <p style={{ fontSize: "13.5px", color: "#9e7080", lineHeight: 1.7, marginBottom: 10 }}>
-                  {e.content.slice(0, 90)}{e.content.length > 90 ? "..." : ""}
-                </p>
-                <div style={{ fontSize: "11px", color: "#c4a0b0", fontStyle: "italic", letterSpacing: "0.06em" }}>
-                  {e.date}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* WRITE VIEW */}
-        {view === "write" && (
-          <div className="fade-in">
-            <button className="btn-ghost" onClick={() => setView("home")} style={{ marginBottom: 22 }}>
-              ← back
-            </button>
-
-            <div style={{
-              background: "rgba(255,255,255,0.72)",
-              backdropFilter: "blur(16px)",
-              border: "1.5px solid rgba(232,160,180,0.3)",
-              borderRadius: 28,
-              padding: "28px 24px",
-              position: "relative",
-              overflow: "hidden",
-            }}>
-              <HalftoneDots />
-              <SpiralBg top={-40} right={-40} size={160} opacity={0.1} />
-
-              <div style={{
-                fontFamily: "'Dancing Script', cursive",
-                fontSize: "26px",
-                color: "#c87090",
-                marginBottom: 22,
-              }}>
-                dear diary...
-              </div>
-
-              {/* Mood picker */}
-              <div style={{ marginBottom: 18 }}>
-                <div style={{ fontSize: "11px", color: "#d4a0b5", letterSpacing: "0.1em", marginBottom: 10, textTransform: "uppercase" }}>
-                  how are you feeling?
-                </div>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  {MOODS.map(m => (
-                    <div
-                      key={m}
-                      className={`mood-pill ${newEntry.mood === m ? "active" : ""}`}
-                      onClick={() => setNewEntry({ ...newEntry, mood: m })}
-                    >
-                      {m}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Title */}
-              <input
-                placeholder="give this moment a name..."
-                value={newEntry.title}
-                onChange={e => setNewEntry({ ...newEntry, title: e.target.value })}
-                style={{ padding: "12px 16px", fontSize: "15px", marginBottom: 14 }}
-              />
-
-              {/* Content */}
-              <textarea
-                ref={textRef}
-                rows={7}
-                placeholder="pour your heart here, softly..."
-                value={newEntry.content}
-                onChange={e => setNewEntry({ ...newEntry, content: e.target.value })}
-                style={{ padding: "14px 16px", fontSize: "14.5px", lineHeight: "1.8", resize: "none", marginBottom: 20 }}
-              />
-
-              <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-                <button className="btn-ghost" onClick={() => setView("home")}>discard</button>
-                <button className="btn-primary" onClick={saveEntry}>save entry 🌸</button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* READ VIEW */}
-        {view === "read" && selectedEntry && (
-          <div className="fade-in">
-            <button className="btn-ghost" onClick={() => setView("home")} style={{ marginBottom: 22 }}>
-              ← back
-            </button>
-
-            <div style={{
-              background: "rgba(255,255,255,0.75)",
-              backdropFilter: "blur(16px)",
-              border: "1.5px solid rgba(232,160,180,0.3)",
-              borderRadius: 28,
-              padding: "32px 26px",
-              position: "relative",
-              overflow: "hidden",
-            }}>
-              <HalftoneDots />
-              <SpiralBg bottom={-50} right={-50} size={200} opacity={0.1} />
-
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <span style={{ fontSize: "11px", color: "#d4a0b5", fontStyle: "italic" }}>{selectedEntry.date}</span>
-                <span style={{ fontSize: "26px" }}>{selectedEntry.mood}</span>
-              </div>
-
-              <div style={{
-                fontFamily: "'Dancing Script', cursive",
-                fontSize: "30px",
-                color: "#c87090",
-                marginBottom: 20,
-                lineHeight: 1.2,
-              }}>
-                {selectedEntry.title || "untitled"}
-              </div>
-
-              <div style={{
-                height: 1,
-                background: "linear-gradient(90deg, #f2c4ce, transparent)",
-                marginBottom: 22,
-              }} />
-
-              <p style={{
-                fontSize: "15px",
-                color: "#7a5060",
-                lineHeight: 2,
-                fontStyle: "italic",
-                whiteSpace: "pre-wrap",
-              }}>
-                {selectedEntry.content}
-              </p>
-
-              <div style={{ marginTop: 28, textAlign: "center" }}>
-                <CatWings size={56} style={{ opacity: 0.6 }} />
-              </div>
-            </div>
-          </div>
-        )}
+      <div
+        style={{
+          color: "#d85b98",
+          fontSize: 12,
+          letterSpacing: "0.12em",
+          marginBottom: 22,
+        }}
+      >
+        ONLINE ✦ MOOD: DREAMY
       </div>
     </div>
-  );
-}
+
+    <MusicPlayer />
+
+    {view === "home" && (
+      <div className="fade-in">
+        <div style={{ textAlign: "center", marginBottom: 26 }}>
+          <button className="btn-primary" onClick={() => setView("write")}>
+            ✨ NEW ENTRY ✨
+          </button>
+        </div>
+
+        {entries.map((e) => (
+          <div
+            key={e.id}
+            className="card"
+            onClick={() => {
+              setSelectedEntry(e);
+              setView("read");
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                top: 10,
+                right: 14,
+                fontSize: 24,
+              }}
+            >
+              {e.mood}
+            </div>
+
+            <div
+              style={{
+                fontFamily: "'Pacifico', cursive",
+                fontSize: 24,
+                color: "#d9478f",
+                marginBottom: 10,
+              }}
+            >
+              {e.title}
+            </div>
+
+            <div
+              style={{
+                color: "#9c5577",
+                lineHeight: 1.7,
+                fontSize: 14,
+                marginBottom: 14,
+              }}
+            >
+              {e.content.slice(0, 95)}...
+            </div>
+
+            <div
+              style={{
+                color: "#d86c9f",
+                fontSize: 11,
+                fontWeight: 700,
+              }}
+            >
+              ♡ {e.date}
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+
+    {view === "write" && (
+      <div className="card fade-in">
+        <button
+          className="btn-ghost"
+          style={{ marginBottom: 18 }}
+          onClick={() => setView("home")}
+        >
+          ← BACK
+        </button>
+
+        <div
+          style={{
+            fontFamily: "'Pacifico', cursive",
+            fontSize: 28,
+            color: "#ff4d99",
+            marginBottom: 20,
+          }}
+        >
+          dear diary...
+        </div>
+
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 18 }}>
+          {MOODS.map((m) => (
+            <div
+              key={m}
+              className={`mood-pill ${newEntry.mood === m ? "active" : ""}`}
+              onClick={() => setNewEntry({ ...newEntry, mood: m })}
+            >
+              {m}
+            </div>
+          ))}
+        </div>
+
+        <input
+          placeholder="title your memory..."
+          value={newEntry.title}
+          onChange={(e) =>
+            setNewEntry({ ...newEntry, title: e.target.value })
+          }
+          style={{ marginBottom: 14 }}
+        />
+
+        <textarea
+          ref={textRef}
+          rows={8}
+          placeholder="write your magical thoughts here..."
+          value={newEntry.content}
+          onChange={(e) =>
+            setNewEntry({ ...newEntry, content: e.target.value })
+          }
+          style={{ marginBottom: 18 }}
+        />
+
+        <div style={{ textAlign: "right" }}>
+          <button className="btn-primary" onClick={saveEntry}>
+            SAVE ENTRY ♡
+          </button>
+        </div>
+      </div>
+    )}
+
+    {view === "read" && selectedEntry && (
+      <div className="card fade-in">
+        <button
+          className="btn-ghost"
+          style={{ marginBottom: 18 }}
+          onClick={() => setView("home")}
+        >
+          ← BACK
+        </button>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: 8,
+          }}
+        >
+          <div style={{ color: "#d86c9f", fontSize: 12 }}>
+            ✦ {selectedEntry.date}
+          </div>
+
+          <div style={{ fontSize: 28 }}>{selectedEntry.mood}</div>
+        </div>
+
+        <div
+          style={{
+            fontFamily: "'Pacifico', cursive",
+            color: "#ff4d99",
+            fontSize: 30,
+            marginBottom: 18,
+          }}
+        >
+          {selectedEntry.title}
+        </div>
+
+        <div
+          style={{
+            background: "rgba(255,255,255,0.5)",
+            borderRadius: 18,
+            padding: 18,
+            color: "#8d4c6f",
+            lineHeight: 2,
+            fontSize: 15,
+            border: "2px dashed #ffb6d7",
+            whiteSpace: "pre-wrap",
+          }}
+        >
+          {selectedEntry.content}
+        </div>
+
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: 20,
+            color: "#ff6cae",
+            fontSize: 22,
+          }}
+        >
+          ✦ ♡ ✦
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+
+); }
