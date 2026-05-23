@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Pixel Diary ✦</title>
+<title>Pixel Note ✦</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
@@ -22,6 +22,12 @@ body{
   text-shadow:2px 2px 0 #000;
 }
 
+.sub{
+  text-align:center;
+  font-size:8px;
+  margin-top:5px;
+}
+
 .container{
   width:90%;
   max-width:520px;
@@ -29,6 +35,7 @@ body{
   padding-bottom:100px;
 }
 
+/* CARD */
 .card{
   background:#fff;
   border:4px solid #000;
@@ -37,30 +44,12 @@ body{
   box-shadow:5px 5px 0 #000;
 }
 
-.date{
-  font-size:8px;
-  color:#ff2e93;
-  margin-bottom:6px;
-}
+.date{font-size:8px;color:#ff2e93;margin-bottom:6px;}
+.mood{font-size:16px;margin-bottom:6px;}
+.text{font-size:9px;white-space:pre-wrap;}
+img{width:100%;border:3px solid #000;margin-top:6px;}
 
-.mood{
-  font-size:16px;
-  margin-bottom:6px;
-}
-
-.text{
-  font-size:9px;
-  white-space:pre-wrap;
-  margin-bottom:8px;
-  color:#000;
-}
-
-img{
-  width:100%;
-  border:3px solid #000;
-  margin-top:6px;
-}
-
+/* FLOAT BUTTON */
 .fab{
   position:fixed;
   bottom:20px;
@@ -75,135 +64,114 @@ img{
   box-shadow:4px 4px 0 #000;
 }
 
-.popup{
+/* WRITE SCREEN */
+.write{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.6);
+  background:#ffd1e8;
   display:none;
-  justify-content:center;
-  align-items:center;
-}
-
-.box{
-  width:90%;
-  max-width:420px;
-  background:#fff;
-  border:4px solid #000;
-  padding:12px;
+  flex-direction:column;
+  padding:15px;
 }
 
 textarea{
   width:100%;
-  height:120px;
-  border:3px solid #000;
-  padding:8px;
+  height:60vh;
+  border:4px solid #000;
+  padding:12px;
   font-family:'Press Start 2P';
-  font-size:8px;
-  margin-bottom:10px;
+  font-size:9px;
+  resize:none;
 }
 
 input{
-  width:100%;
+  margin-top:10px;
   border:3px solid #000;
   padding:8px;
   font-size:8px;
-  margin-bottom:10px;
 }
 
-button{
+.btn{
+  margin-top:10px;
   width:100%;
-  padding:10px;
-  background:#ff2e93;
+  padding:12px;
   border:3px solid #000;
-  color:#fff;
   font-family:'Press Start 2P';
   cursor:pointer;
 }
+
+.save{background:#ff2e93;color:#fff;}
+.back{background:#000;color:#fff;}
 </style>
 </head>
 
 <body>
 
-<div class="header">PIXEL DIARY ♡</div>
+<div class="header">PIXEL NOTE ✦</div>
+<div class="sub">retro writing system</div>
 
 <div class="container" id="entries"></div>
 
-<button class="fab" onclick="openPopup()">+</button>
+<button class="fab" onclick="openWrite()">+</button>
 
-<div class="popup" id="popup">
-  <div class="box">
+<!-- WRITE SCREEN -->
+<div class="write" id="write">
 
-    <textarea id="text" placeholder="write your memory..."></textarea>
+  <textarea id="text" placeholder="write everything here..."></textarea>
 
-    <input type="file" id="image" accept="image/*"/>
+  <input type="file" id="image" accept="image/*"/>
 
-    <button onclick="addEntry()">SAVE</button>
-    <button onclick="closePopup()" style="background:#000;margin-top:8px;">CANCEL</button>
+  <button class="btn save" onclick="save()">SAVE NOTE</button>
+  <button class="btn back" onclick="closeWrite()">BACK</button>
 
-  </div>
 </div>
 
 <script>
-function openPopup(){
-  document.getElementById("popup").style.display="flex";
-}
-
-function closePopup(){
-  document.getElementById("popup").style.display="none";
-}
-
-/* 🌸 ENTRIES START (EXAMPLES) */
-const examples = [
-{
-  mood:"🌸",
-  text:"today felt soft like pink clouds ✦\ni drank strawberry milk and watched the rain",
-  date:"May 23"
-},
-{
-  mood:"✨",
-  text:"i saw stars in my thoughts tonight\nit felt like everything was glowing inside me",
-  date:"May 20"
-},
-{
-  mood:"🐱",
-  text:"a small cat followed me home\nbest day ever ♡",
-  date:"May 18"
-}
-];
-
 const container = document.getElementById("entries");
 
-examples.forEach(e=>{
-  const card = document.createElement("div");
-  card.className="card";
+/* EXAMPLES */
+const examples = [
+{mood:"🌸",date:"May 23",text:"soft day... everything felt slow and peaceful"},
+{mood:"✨",date:"May 20",text:"stars in my mind tonight"},
+{mood:"🐱",date:"May 18",text:"a cat followed me home ♡"}
+];
 
+examples.forEach(e=>{
+  const card=document.createElement("div");
+  card.className="card";
   card.innerHTML=`
     <div class="date">${e.date}</div>
     <div class="mood">${e.mood}</div>
     <div class="text">${e.text}</div>
   `;
-
   container.appendChild(card);
 });
-/* 🌸 ENTRIES END */
 
-function addEntry(){
-  const text = document.getElementById("text").value;
-  const file = document.getElementById("image").files[0];
+function openWrite(){
+  document.getElementById("write").style.display="flex";
+}
+
+function closeWrite(){
+  document.getElementById("write").style.display="none";
+}
+
+function save(){
+  const text=document.getElementById("text").value;
+  const file=document.getElementById("image").files[0];
 
   if(!text && !file) return;
 
-  const card = document.createElement("div");
-  card.className = "card";
+  const card=document.createElement("div");
+  card.className="card";
 
-  const date = new Date().toDateString();
+  const date=new Date().toDateString();
 
-  let img = "";
+  let img="";
   if(file){
-    img = `<img src="${URL.createObjectURL(file)}">`;
+    img=`<img src="${URL.createObjectURL(file)}">`;
   }
 
-  card.innerHTML = `
+  card.innerHTML=`
     <div class="date">${date}</div>
     <div class="mood">✨</div>
     <div class="text">${text}</div>
@@ -215,7 +183,7 @@ function addEntry(){
   document.getElementById("text").value="";
   document.getElementById("image").value="";
 
-  closePopup();
+  closeWrite();
 }
 </script>
 
