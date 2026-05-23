@@ -3,270 +3,249 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Pixel Note ✦ Girly Edition</title>
+<title>Pixel Note ✦</title>
 
 <style>
+/* 1. استيراد خط البيكسل */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 *{
   box-sizing:border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body{
-  margin:0;
-  font-family:'Press Start 2P', cursive;
-  overflow-x:hidden;
-  /* GIRLY BACKGROUND STYLE */
-  background-color: #ffe0f0;
-  background-image: repeating-linear-gradient(45deg, #ffcde0 0px, #ffcde0 15px, #ffb3d1 15px, #ffb3d1 30px);
+  /* 2. خلفية القلوب الوردية المحاكاة بـ CSS */
+  background-color: #ffe1f2;
+  background-image:
+    radial-gradient(#ffffff 20%, transparent 20%),
+    radial-gradient(#ffffff 20%, transparent 20%);
+  background-position: 0 0, 15px 15px;
+  background-size: 30px 30px;
+  
+  font-family: 'Press Start 2P', cursive;
+  overflow-x: hidden;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* HEADER */
-.header{
-  text-align:center;
-  padding:25px;
-  font-size:18px;
-  color:#ff4d94; /* Hot Pink */
-  text-shadow:
-    -3px -3px 0 #fff,  
-    3px -3px 0 #fff,
-    -3px 3px 0 #fff,
-    3px 3px 0 #fff,
-    4px 4px 0 #000; /* Black outer shadow */
-}
-
-.sub{
-  text-align:center;
-  font-size:9px;
-  margin-bottom:15px;
-  color: #800060; /* Deep Purple-Pink */
-  background: #fff;
-  display: inline-block;
-  padding: 5px;
-  border-radius: 5px;
-  transform: translateX(-50%);
-  left: 50%;
+/* 3. حاوية العناوين والشريط */
+.header-area {
+  text-align: center;
   position: relative;
+  margin-top: 20px;
+  margin-bottom: 30px;
 }
 
-/* CONTAINER */
-.container{
-  width:92%;
-  max-width:520px;
-  margin:auto;
-  padding-bottom:100px;
-}
-
-/* CARD - Girly Aesthetic */
-.card{
-  border:4px solid #cc0066; /* Deep Pink Border */
-  border-radius: 10px; /* Softer Corners */
-  padding:15px;
-  margin-top:18px;
-  box-shadow: 6px 6px 0 #800060; /* Dark Purple Shadow */
-  background:#fff;
-  background-image: linear-gradient(135deg, #fffcfd, #fff0f6);
-}
-
-.title{font-size:11px;margin-bottom:8px; color: #cc0066;}
-.text{font-size:10px;white-space:pre-wrap;line-height:1.6; color: #400030;}
-.mood{font-size:18px;margin-bottom:8px;}
-
-/* FAB */
-.fab{
-  position:fixed;
-  bottom:25px;
-  right:25px;
-  width:70px;
-  height:70px;
-  border:4px solid #cc0066;
-  border-radius: 50%; /* Circle FAB */
-  background:#ff1493; /* Bright Hot Pink */
-  color:#fff;
-  font-size:32px;
-  cursor:pointer;
-  box-shadow:6px 6px 0 #800060;
-}
-
-/* WRITE SCREEN */
-.write{
-  position:fixed;
-  inset:0;
-  display:none;
-  flex-direction:column;
-  padding:20px;
-  overflow:hidden;
-  background: rgba(255, 230, 242, 0.95); /* Soft pink overlay */
-}
-
-/* INPUTS FIXED - Cute style */
-input, textarea{
-  width:100%;
-  border:4px solid #cc0066;
-  border-radius: 8px;
-  padding:12px;
-  font-family:'Press Start 2P';
-  font-size:10px;
-  margin-bottom:10px;
-  background: #fff;
-}
-
-textarea{
-  height:50vh;
-  resize:none;
-  overflow:auto;
-}
-
-input:focus, textarea:focus {
-  outline: none;
-  border-color: #ff1493;
-}
-
-/* OPTIONS */
-.options{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-bottom:10px;
+/* 4. الرموز العلوية فوق العنوان */
+.icons {
+  display: flex;
+  gap: 10px;
   justify-content: center;
+  margin-bottom: 10px;
 }
 
-.opt{
-  border:3px solid #cc0066;
-  border-radius: 5px;
-  padding:8px;
-  font-size:8px;
-  cursor:pointer;
-  background:#fff;
-  box-shadow: 4px 4px 0 #800060;
-  color: #cc0066;
+.icon {
+  font-size: 16px;
+  color: #ff3399; /* لون وردي غامق */
 }
 
-/* BUTTONS */
-.btn{
-  width:100%;
-  padding:15px;
-  border:4px solid #cc0066;
+/* 5. شريط "PIXEL NOTE" */
+.pixel-note-banner {
+  background: white;
+  border: 4px solid #000;
+  padding: 15px 30px;
+  display: inline-block;
+  position: relative;
+  box-shadow: 4px 4px 0 #000;
+  margin-bottom: 20px;
+}
+
+/* زخارف شريط CSS (تأثير مسنن بسيط) */
+.pixel-note-banner::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background: white;
+  border-left: 4px solid #000;
+  border-right: 4px solid #000;
+  border-bottom: 4px solid #000;
+  background-image: linear-gradient(135deg, white 25%, transparent 25%), linear-gradient(225deg, white 25%, transparent 25%);
+  background-position: 5px 0, 5px 0;
+  background-size: 10px 10px;
+}
+
+.pixel-note-text {
+  font-size: 20px;
+  color: #ff3399;
+  text-shadow: 2px 2px 0 #ffccff, 4px 4px 0 #000;
+}
+
+/* 6. عبارة "write with retro style" */
+.sub-header {
+  color: #800060;
+  font-size: 8px;
+  background: white;
+  display: inline-block;
+  padding: 6px;
+  border-radius: 4px;
+}
+
+/* 7. حاوية دفتر الملاحظات (الجدول) */
+.notebook {
+  width: 90%;
+  max-width: 500px;
+  background: #fdf2ff; /* لون بنفسجي فاتح جداً */
+  border: 4px solid #cc33cc; /* حدود بنفسجية */
   border-radius: 8px;
-  font-family:'Press Start 2P';
-  font-size: 10px;
-  cursor:pointer;
-  margin-top:10px;
-  box-shadow: 6px 6px 0 #800060;
+  box-shadow: 6px 6px 0 #990099;
+  overflow: hidden;
 }
 
-.save{background:#ff4d94;color:#fff;}
-.back{background:#800060;color:#fff;}
+/* 8. رأس دفتر الملاحظات */
+.notebook-header {
+  background: white;
+  border-bottom: 4px solid #cc33cc;
+  padding: 10px;
+  text-align: center;
+  color: #990099;
+  font-size: 9px;
+  box-shadow: inset 0 -4px 0 #ffccff;
+}
 
-/* Girly Background Palettes */
-.bg-sakura{background:linear-gradient(135deg,#ffdde1,#ee9ca7);}
-.bg-dreamy{background:repeating-linear-gradient(-45deg,#ffe6f2,#fff 10px,#ffe6f2 20px);}
-.bg-midnight{background:#2a012a;color:#fff;} /* Very dark purple */
-.bg-teal-dream{background:linear-gradient(135deg,#d4fc79,#96e6a1);}
-.bg-strawberry{background:#fff; background-image: radial-gradient(#ffb3b3 15%, transparent 16%); background-size: 15px 15px;}
-.bg-sunrise{background:linear-gradient(135deg,#ff9a9e,#fad0c4);}
-.bg-galaxy{background:linear-gradient(135deg,#667eea,#764ba2); color:#fff;}
-.bg-cloud-nine{background:linear-gradient(135deg,#fff,#ffe6f2);}
-.bg-magenta-pop{background:repeating-linear-gradient(0deg,#fff,#fff 2px,#ff1493 3px,#fff 6px);}
-.bg-peachy{background:linear-gradient(135deg,#f6d365,#fda085);}
+/* 9. تخطيط شبكة الملاحظات */
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 15px;
+  padding: 20px;
+}
+
+/* 10. صندوق ملاحظة فردي */
+.note-box {
+  background: white;
+  border: 3px solid #cc33cc;
+  border-radius: 5px;
+  padding: 10px;
+  position: relative;
+  height: 120px; /* ارتفاع ثابت للمحاكاة */
+}
+
+.note-box-title {
+  color: #990099;
+  font-size: 8px;
+  border-bottom: 2px solid #cc33cc;
+  padding-bottom: 5px;
+  margin-bottom: 8px;
+}
+
+.note-box-content {
+  color: #400030;
+  font-size: 7px;
+  line-height: 1.5;
+}
+
+/* 11. زخارف خارجية (الكرز، البينك...) */
+.ornament {
+  position: absolute;
+  font-size: 16px;
+}
+
+.cherry {
+  top: 50px;
+  left: 20px;
+  color: #ff3399;
+}
+
+.p-letter {
+  bottom: 80px;
+  right: 20px;
+  color: #ff3399;
+  font-size: 24px;
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="header">PIXEL NOTE ✦</div>
-<div class="sub">✨ write with retro girly style ✨</div>
+  <!-- الزخارف الخارجية -->
+  <div class="ornament cherry">🍒</div>
+  <div class="ornament p-letter">P</div>
 
-<div class="container" id="entries"></div>
-
-<button class="fab" onclick="openWrite()">+</button>
-
-<!-- WRITE SCREEN -->
-<div class="write" id="write">
-
-  <input id="title" placeholder="title...">
-
-  <textarea id="text" placeholder="write your note..."></textarea>
-
-  <!-- BACKGROUNDS (Girlified Names) -->
-  <div class="options">
-    <div class="opt" onclick="setBG('bg-sakura')">sakura</div>
-    <div class="opt" onclick="setBG('bg-dreamy')">dreamy</div>
-    <div class="opt" onclick="setBG('bg-midnight')">night</div>
-    <div class="opt" onclick="setBG('bg-teal-dream')">teal-dream</div>
-    <div class="opt" onclick="setBG('bg-strawberry')">berry-dot</div>
-    <div class="opt" onclick="setBG('bg-sunrise')">sunny</div>
-    <div class="opt" onclick="setBG('bg-galaxy')">galaxy</div>
-    <div class="opt" onclick="setBG('bg-cloud-nine')">cloud9</div>
-    <div class="opt" onclick="setBG('bg-magenta-pop')">pop</div>
-    <div class="opt" onclick="setBG('bg-peachy')">peachy</div>
+  <!-- حاوية العنوان -->
+  <div class="header-area">
+    <div class="icons">
+      <span class="icon">✨</span>
+      <span class="icon">🐱</span>
+      <span class="icon">⭐</span>
+    </div>
+    
+    <div class="pixel-note-banner">
+      <span class="pixel-note-text">PIXEL NOTE</span>
+    </div>
+    
+    <div class="sub-header">
+      ✨ write with retro style ✨
+    </div>
   </div>
 
-  <!-- TEXT COLORS (Girlified Palette) -->
-  <div class="options">
-    <div class="opt" onclick="setColor('#000')">black</div>
-    <div class="opt" onclick="setColor('#ff2e93')">pink</div>
-    <div class="opt" onclick="setColor('#6a0dad')">purple</div>
-    <div class="opt" onclick="setColor('#ff0000')">red</div>
-    <div class="opt" onclick="setColor('#e68a00')">gold</div>
-    <div class="opt" onclick="setColor('#0099ff')">blue</div>
+  <!-- حاوية دفتر الملاحظات -->
+  <div class="notebook">
+    <div class="notebook-header">
+      ✦ CUTE NOTES AWAIT! ✦
+    </div>
+    
+    <div class="notes-grid">
+      <!-- صندوق ملاحظة 1 -->
+      <div class="note-box">
+        <div class="note-box-title">DAILY TASK:</div>
+        <div class="note-box-content">
+          🚀 I did my job today.<br>
+          (Time to relax!)
+        </div>
+      }
+      </div>
+      
+      <!-- صندوق ملاحظة 2 -->
+      <div class="note-box">
+        <div class="note-box-title">IDEA:</div>
+        <div class="note-box-content">
+          🎮 Gaming Night<br>
+          (retro games!)
+        </div>
+      }
+      </div>
+      
+      <!-- صندوق ملاحظة 3 -->
+      <div class="note-box">
+        <div class="note-box-title">LOVE:</div>
+        <div class="note-box-content">
+          💖 Grocery List<br>
+          (Strawberries)
+        </div>
+      }
+      </div>
+      
+      <!-- صندوق ملاحظة 4 -->
+      <div class="note-box">
+        <div class="note-box-title">NOTE:</div>
+        <div class="note-box-content">
+          ✦ You are cute!<br>
+          (That's a fact!)
+        </div>
+      }
+      </div>
+      
+    </div>
   </div>
-
-  <button class="btn save" onclick="save()">SAVE NOTE</button>
-  <button class="btn back" onclick="closeWrite()">BACK</button>
-
-</div>
-
-<script>
-
-let bgClass="bg-sakura";
-let textColor="#000";
-
-function setBG(b){
-  bgClass=b;
-  document.getElementById("write").className="write "+b;
-}
-
-function setColor(c){
-  textColor=c;
-}
-
-function openWrite(){
-  document.getElementById("write").style.display="flex";
-}
-
-function closeWrite(){
-  document.getElementById("write").style.display="none";
-}
-
-/* NOTES */
-const container=document.getElementById("entries");
-
-function save(){
-
-  const title=document.getElementById("title").value;
-  const text=document.getElementById("text").value;
-
-  if(!title && !text) return;
-
-  const card=document.createElement("div");
-  card.className="card "+bgClass;
-  card.style.color=textColor;
-
-  card.innerHTML=`
-    <div class="title">${title}</div>
-    <div class="text">${text}</div>
-  `;
-
-  container.prepend(card);
-
-  document.getElementById("title").value="";
-  document.getElementById("text").value="";
-
-  closeWrite();
-}
-
-</script>
 
 </body>
 </html>
